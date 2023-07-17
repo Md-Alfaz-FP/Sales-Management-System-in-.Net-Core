@@ -1,0 +1,96 @@
+﻿@model SalesInformationSystem.ViewModel.VmSale;
+@{
+    ViewData["Title"] = "Single";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var listMaster = ViewData["List"] as List<SalesInformationSystem.Models.SaleMaster>;
+    var CreateDate = Model.CreateDate == null ? "" : Convert.ToDateTime(Model.CreateDate).ToString("yyyy-MM-dd");
+    var rad1 = Model.Gender == "Male" ? "selected" : "";
+    var rad2 = Model.Gender == "Female" ? "selected" : "";
+    var ButtonValue = Model.SaleId > 0 ? "Update" : "Add";
+}
+
+<h1>Single</h1>
+
+@using (Html.BeginForm(
+   "Single",
+   "Sales"
+))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m=>m.SaleId)
+    @Html.LabelFor(m=>m.CreateDate)
+    <br />
+    <input type="date" name="CreateDate" value="@CreateDate" />
+    <br />
+    @Html.LabelFor(m=>m.CustomerName)
+    <br />
+    @Html.TextBoxFor(m=>m.CustomerName)
+    <br />
+    @Html.LabelFor(m=>m.CustomerAddress)
+    <br />
+    @Html.TextBoxFor(m=>m.CustomerAddress)
+    <br />
+    @Html.LabelFor(m=>m.Gender)
+    <br />
+    @Html.RadioButtonFor(m=>m.Gender, "Male")
+    @Html.LabelFor(m=>m.Gender, "Male")
+    <br />
+    @Html.RadioButtonFor(m=>m.Gender, "Female")
+    @Html.LabelFor(m=>m.Gender, "Female")
+    <br />
+    <button type="submit" class="btn btn-primary">@ButtonValue</button>
+    <br />
+    <br />
+    <a href="/Sales/Single" class="btn btn-success">Reset</a>
+    <br />
+    <br />
+    <button type="button" class="btn btn-dark" onclick="addItem();">AddItem</button>
+    <br />
+    <br />
+    <table class="table table-bordered table-responsive table-striped">
+        <tr>
+            <th>ProductName</th>
+            <th>Price</th>
+        </tr>
+        <tbody id="tSD">
+            @foreach (var list in Model.SaleDetails)
+            {
+                <tr id="tr_0">
+                    <td><input type="text" name="ProductName" value="@list.ProductName" /></td>
+                    <td><input type="text" name="Price" value="@list.Price" /></td>
+                    <td><a href="javascript:void(0)" onclick="removeItem(0)">Remove</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<table class="table table-bordered table-responsive table-striped">
+    <tr>
+        <th>CreateDate</th>
+        <th>CustomerName</th>
+        <th>CustomerAddress</th>
+        <th>Gender</th>
+    </tr>
+    @foreach (var list in listMaster)
+    {
+        <tr>
+            <td>@list.CreateDate</td>
+            <td>@list.CustomerName</td>
+            <td>@list.CustomerAddress</td>
+            <td>@list.Gender</td>
+            <td><a href="/Sales/Single?id=@list.SaleId">Edit</a></td>
+            <td><a href="/Sales/SingleDelete?id=@list.SaleId">Delete</a></td>
+        </tr>
+    }
+</table>
+
+<script>
+    function removeItem(id) {
+        document.getElementById("tr_" + id).remove();
+    }
+    function addItem() {
+        var trs = '<tr id="tr_0"><td><input type="text" name="ProductName" /></td><td><input type="text" name="Price"/></td><td><a href="javascript:void(0)" onclick="removeItem(0)">Remove</a></td></tr>';
+        document.getElementById('tSD').innerHTML += trs;
+    }
+</script>
