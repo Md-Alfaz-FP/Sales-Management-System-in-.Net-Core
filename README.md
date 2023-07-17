@@ -1,1 +1,1 @@
-"# SalesInfo-management-system-with-.Net-Core" 
+"# Sales-Management-System-in-.Net-Core" 
